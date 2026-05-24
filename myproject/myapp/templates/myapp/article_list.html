@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Список статей</title>
+</head>
+<body>
+    <h1>Список статей</h1>
+
+    {% for article in page_obj %}
+        <div style="border:1px solid #ccc; padding:10px; margin-bottom:15px;">
+            <h2>{{ article.title }}</h2>
+            <p><strong>Категорія:</strong> {{ article.category.name }}</p>
+            <p>{{ article.content }}</p>
+            <p><em>Дата створення: {{ article.created_at }}</em></p>
+
+            <h3>Коментарі:</h3>
+            {% if article.comments.all %}
+                <ul>
+                {% for comment in article.comments.all %}
+                    <li>
+                        <strong>{{ comment.author }}:</strong>
+                        {{ comment.text }}
+                        <em>({{ comment.created_at }})</em>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>Коментарів ще немає.</p>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>Статей ще немає.</p>
+    {% endfor %}
+
+    <hr>
+
+    <!-- ПАГІНАЦІЯ -->
+    <div>
+        {% if page_obj.has_previous %}
+            <a href="?page=1">Перша</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Назад</a>
+        {% endif %}
+
+        <span>
+            Сторінка {{ page_obj.number }} з {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Вперед</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Остання</a>
+        {% endif %}
+    </div>
+
+</body>
+</html>
